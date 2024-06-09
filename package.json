@@ -1,0 +1,34 @@
+{
+  "name": "log-variable-value",
+  "displayName": "Log Variable Value",
+  "description": "Logs the value of a selected variable or literal to the console and evaluates expressions",
+  "version": "0.0.2",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "activationEvents": [
+    "onCommand:extension.logVariableValue"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.logVariableValue",
+        "title": "Log Variable, Literal or Evaluate Expression"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.50.0",
+    "typescript": "^4.0.3",
+    "eslint": "^7.10.0"
+  }
+}
