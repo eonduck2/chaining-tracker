@@ -19,7 +19,9 @@
     ]
   },
   "publisher": "eonduck2",
-  "repository": {"url": "https://github.com/eonduck2/chaining-tracker.git"},
+  "repository": {
+    "url": "https://github.com/eonduck2/chaining-tracker.git"
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
@@ -30,8 +32,11 @@
   },
   "devDependencies": {
     "@types/vscode": "^1.50.0",
-    "typescript": "^4.0.3",
-    "eslint": "^7.10.0"
+    "eslint": "^7.10.0",
+    "typescript": "^4.0.3"
   },
-  "license":"MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.14.2"
+  }
 }
