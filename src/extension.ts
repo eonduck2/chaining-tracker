@@ -21,22 +21,8 @@ export function activate(context: vscode.ExtensionContext) {
           true
         );
 
-        console.log(`소스 파일 ${sourceFile}`);
-        console.log(`셀렉티드 ${selectedText}`);
-        console.log(`도큐먼트 ${documentText}`);
-
         let variableValue: any = undefined;
 
-        const isLiteral = (text: string) => {
-          return (
-            (text.startsWith("'") && text.endsWith("'")) ||
-            (text.startsWith('"') && text.endsWith('"')) ||
-            (text.startsWith("`") && text.endsWith("`")) ||
-            !isNaN(Number(text))
-          );
-        };
-
-        // 바뀐 부분: evaluateExpression 함수 수정
         const evaluateExpression = (expression: string, context: any) => {
           try {
             const func = new Function(
@@ -46,11 +32,11 @@ export function activate(context: vscode.ExtensionContext) {
             const result = func(context);
             return result;
           } catch (e) {
+            // console.error(`오류: ${e}`);
             return undefined;
           }
         };
 
-        // 바뀐 부분: context 객체 및 findVariableValue 함수 추가
         const context: any = {};
 
         const findVariableValue = (node: ts.Node) => {
@@ -59,6 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
             const initializer = node.initializer
               ? node.initializer.getText()
               : "undefined";
+            if (selectedText !== name) {
+            }
             context[name] = evaluateExpression(initializer, {});
           }
           ts.forEachChild(node, findVariableValue);
@@ -66,18 +54,34 @@ export function activate(context: vscode.ExtensionContext) {
 
         findVariableValue(sourceFile);
 
-        if (isLiteral(selectedText)) {
-          variableValue = selectedText;
-        } else {
-          // 바뀐 부분: evaluateExpression 함수 호출 시 context 전달
-          variableValue = evaluateExpression(selectedText, context);
-        }
+        const parts = selectedText
+          .split(".")
+          .map((part) => part.replace("..", "."))
+          .filter(Boolean);
+
+        let expressionResult = "";
+        parts.reduce((prevExpression, currentPart) => {
+          const expression = prevExpression
+            ? `${prevExpression}.${currentPart}`
+            : currentPart;
+          variableValue = evaluateExpression(expression, context);
+          if (expression !== selectedText && variableValue !== undefined) {
+            expressionResult += `${expression.replace(
+              `;`,
+              ""
+            )}: ${variableValue}\n`;
+          } else if (expression === selectedText) {
+            expressionResult += `${expression.replace(
+              `;`,
+              ""
+            )}: ${variableValue}\n`;
+          }
+          return expression;
+        }, "");
 
         if (variableValue !== undefined) {
-          console.log(variableValue);
-          vscode.window.showInformationMessage(
-            `결과를 콘솔에 출력했습니다: ${variableValue}`
-          );
+          console.log(expressionResult);
+          vscode.window.showInformationMessage(`결과 출력: ${variableValue}`);
         } else {
           vscode.window.showErrorMessage(
             "변수를 찾을 수 없거나 표현식을 평가할 수 없습니다."
