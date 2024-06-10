@@ -3,20 +3,17 @@ import * as ts from "typescript";
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
-    "extension.logVariableValue",
+    "extension.chainingTracker",
     () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         const document = editor.document;
         const selection = editor.selection;
 
-        // 선택한 텍스트 가져오기
         const selectedText = document.getText(selection).trim();
 
-        // 전체 문서 내용 가져오기
         const documentText = document.getText();
 
-        // TypeScript 소스 파일 생성
         const sourceFile = ts.createSourceFile(
           "temp.ts",
           documentText,
@@ -24,9 +21,12 @@ export function activate(context: vscode.ExtensionContext) {
           true
         );
 
+        console.log(`소스 파일 ${sourceFile}`);
+        console.log(`셀렉티드 ${selectedText}`);
+        console.log(`도큐먼트 ${documentText}`);
+
         let variableValue: any = undefined;
 
-        // 선택한 텍스트가 리터럴인지 확인
         const isLiteral = (text: string) => {
           return (
             (text.startsWith("'") && text.endsWith("'")) ||
@@ -36,39 +36,41 @@ export function activate(context: vscode.ExtensionContext) {
           );
         };
 
-        const evaluateExpression = (expression: string) => {
+        // 바뀐 부분: evaluateExpression 함수 수정
+        const evaluateExpression = (expression: string, context: any) => {
           try {
-            // Function 생성자를 사용하여 표현식 실행
-            const func = new Function(`return ${expression}`);
-            const result = func();
+            const func = new Function(
+              "context",
+              `with(context) { return ${expression}; }`
+            );
+            const result = func(context);
             return result;
           } catch (e) {
             return undefined;
           }
         };
 
+        // 바뀐 부분: context 객체 및 findVariableValue 함수 추가
+        const context: any = {};
+
+        const findVariableValue = (node: ts.Node) => {
+          if (ts.isVariableDeclaration(node)) {
+            const name = node.name.getText();
+            const initializer = node.initializer
+              ? node.initializer.getText()
+              : "undefined";
+            context[name] = evaluateExpression(initializer, {});
+          }
+          ts.forEachChild(node, findVariableValue);
+        };
+
+        findVariableValue(sourceFile);
+
         if (isLiteral(selectedText)) {
           variableValue = selectedText;
         } else {
-          // AST 탐색하여 선택한 변수 값 찾기
-          const findVariableValue = (node: ts.Node) => {
-            if (
-              ts.isVariableDeclaration(node) &&
-              node.name.getText() === selectedText
-            ) {
-              if (node.initializer) {
-                variableValue = node.initializer.getText();
-              }
-            }
-            ts.forEachChild(node, findVariableValue);
-          };
-
-          findVariableValue(sourceFile);
-
-          if (variableValue === undefined) {
-            // 선택된 텍스트가 변수명만이 아닌 표현식일 경우
-            variableValue = evaluateExpression(selectedText);
-          }
+          // 바뀐 부분: evaluateExpression 함수 호출 시 context 전달
+          variableValue = evaluateExpression(selectedText, context);
         }
 
         if (variableValue !== undefined) {
@@ -82,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
           );
         }
       } else {
-        vscode.window.showErrorMessage("No active editor found.");
+        vscode.window.showErrorMessage("실행 중인 에디터 없음");
       }
     }
   );

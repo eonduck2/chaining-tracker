@@ -7,14 +7,14 @@
     "vscode": "^1.50.0"
   },
   "activationEvents": [
-    "onCommand:extension.logVariableValue"
+    "onCommand:extension.chainingTracker"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.logVariableValue",
-        "title": "Log Variable, Literal or Evaluate Expression"
+        "command": "extension.chainingTracker",
+        "title": "체이닝 트래커"
       }
     ]
   },
