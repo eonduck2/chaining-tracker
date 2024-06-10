@@ -1,7 +1,7 @@
 {
-  "name": "log-variable-value",
-  "displayName": "Log Variable Value",
-  "description": "Logs the value of a selected variable or literal to the console and evaluates expressions",
+  "name": "Chaining-Tracker",
+  "displayName": "Chaining Tracker",
+  "description": "chaining tracking",
   "version": "0.0.2",
   "engines": {
     "vscode": "^1.50.0"

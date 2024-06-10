@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
             const result = func(context);
             return result;
           } catch (e) {
-            // console.error(`오류: ${e}`);
+            // console.error(`평가 중 오류 발생: ${e}`);
             return undefined;
           }
         };
@@ -83,9 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
           console.log(expressionResult);
           vscode.window.showInformationMessage(`결과 출력: ${variableValue}`);
         } else {
-          vscode.window.showErrorMessage(
-            "변수를 찾을 수 없거나 표현식을 평가할 수 없습니다."
-          );
+          vscode.window.showErrorMessage("유효하지 않은 값");
         }
       } else {
         vscode.window.showErrorMessage("실행 중인 에디터 없음");
