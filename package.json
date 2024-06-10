@@ -14,7 +14,7 @@
     "commands": [
       {
         "command": "extension.chainingTracker",
-        "title": "체이닝 트래커"
+        "title": "Chaining Tracker"
       }
     ]
   },
