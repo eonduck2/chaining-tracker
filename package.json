@@ -2,7 +2,7 @@
   "name": "Chaining-Tracker",
   "displayName": "Chaining Tracker",
   "description": "chaining tracking",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.50.0"
   },
