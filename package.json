@@ -7,7 +7,7 @@
     "vscode": "^1.50.0"
   },
   "activationEvents": [
-    "onCommand:extension.chainingTracker"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,7 +19,10 @@
     ]
   },
   "publisher": "eonduck2",
-  "repository": {"url": "https://github.com/eonduck2/chaining-tracker.git"},
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/eonduck2/chaining-tracker.git"
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
@@ -33,5 +36,5 @@
     "typescript": "^4.0.3",
     "eslint": "^7.10.0"
   },
-  "license":"MIT"
+  "license": "MIT"
 }
