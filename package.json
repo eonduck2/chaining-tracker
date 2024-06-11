@@ -2,12 +2,12 @@
   "name": "Chaining-Tracker",
   "displayName": "Chaining Tracker",
   "description": "chaining tracking",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
-    "vscode": "^1.50.0"
+    "vscode": "^1.79.2"
   },
   "activationEvents": [
-    "*"
+    "onCommand:extension.chainingTracker"
   ],
   "main": "./out/extension.js",
   "contributes": {
